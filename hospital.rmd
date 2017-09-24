@@ -1,0 +1,185 @@
+---
+title: "hospital"
+author: "suman"
+date: "September 20, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+#hospital data outcome-of-care-measures  week4 assignment
+#*********************************************************
+#*********************************************************
+
+```{r}
+outcome<-read.table("outcome-of-care-measures.csv",sep=',',header = TRUE)
+hospital<-read.table("hospital-data.csv",sep=',',header = TRUE)
+outcome[,11]<-as.numeric(outcome[,11])
+
+best <- function(state, outcome1) {
+  outcome<-read.table("outcome-of-care-measures.csv",sep=',',header = TRUE)
+```
+## Check that state and outcome are valid
+```{r}
+  if (state %in% outcome$State){
+    if (outcome1 %in% c("heart attack", "heart failure", "pneumonia")){
+      
+    }
+    else{
+      print("enter valid outcome") 
+      break
+    }}
+   else{
+      print("enter valid state")
+      break
+   }
+```  
+  ## Return hospital name in that state with lowest 30-day death
+  ## rate
+```{r}
+a<-subset(outcome,outcome$State==state)  # select only row for state
+  if (outcome1=="heart attack"){var=  "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack"}
+  if (outcome1== "heart failure"){var= "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure" }
+  if (outcome1=="pneumonia"){var="Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia"} 
+  a1<-a[c("State","Hospital.Name",var)]  # select only 3 columns 
+```
+##a2<-a1[order(a1[,3],as.numeric(as.factor(a1[,2]))),]  # sort on col 3 and 2 
+```{r}
+a1[,c(2)]=trimws(a1[,c(2)])  #remove whitespace
+  a1[,c(3)]=trimws(a1[,c(3)])
+  a21<-a1[order(as.numeric(as.factor(a1[,2]))),]
+  a2<-a21[order(as.numeric(a21[,3])),]
+  print(a2[1,])
+}
+```
+#ranking
+************
+```{r}
+outcome<-read.table("outcome-of-care-measures.csv",sep=',',header = TRUE)
+hospital<-read.table("hospital-data.csv",sep=',',header = TRUE)
+outcome[,11]<-as.numeric(outcome[,11])
+
+rankhospital<- function(state, outcome1,rank=1) {
+```
+## Read outcome data
+```{r}
+outcome<-read.table("outcome-of-care-measures.csv",sep=',',header = TRUE)
+```
+## Check that state and outcome are valid
+```{r}
+if (state %in% outcome$State){
+    if (outcome1 %in% c("heart attack", "heart failure", "pneumonia")){
+      
+    }
+    else{
+      print("enter valid outcome") 
+      break
+    }}
+   else{
+      print("enter valid state")
+      break
+   }
+```  
+  
+  ## Return hospital name in that state with lowest 30-day death
+  ## rate
+```{r}
+a<-subset(outcome,outcome$State==state)  # select only row for state
+  if (outcome1=="heart attack"){var=  "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack"}
+  if (outcome1== "heart failure"){var= "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure" }
+  if (outcome1=="pneumonia"){var="Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia"} 
+  a1<-a[c("State","Hospital.Name",var)]  # select only 3 columns 
+```
+##a2<-a1[order(a1[,3],as.numeric(as.factor(a1[,2]))),]  # sort on col 3 and 2 
+```{r}
+a1[,c(2)]=trimws(a1[,c(2)])  #remove whitespace
+  a1[,c(3)]=trimws(a1[,c(3)])
+  a21<-a1[order(as.numeric(as.factor(a1[,2]))),]
+  a2<-a21[order(as.numeric(a21[,3])),]
+  a33<-a2[is.na(a2[,3])==0,]  # exclude na rec in col 3 
+  a3<-a33[a33[,3]!='Not Available',]  # exclude na rec in col 3 
+  print("change length")
+  print(nrow(a2))
+  print(nrow(a3))
+  if (rank=="best"){rank=1}
+  if (rank=="worst"){
+    rank=nrow(a3) 
+    print("worst value is changed")
+  }
+  print(a3[rank,])
+  print(tail(a3))
+}
+```
+
+#ranking in all state
+
+```{r}
+rankall <- function(outcome1,rank=1) {
+```
+## Read outcome data
+```{r}
+outcome<-read.table("outcome-of-care-measures.csv",sep=',',header = TRUE)
+```
+## Check that state and outcome are valid
+```{r}
+if (outcome1 %in% c("heart attack", "heart failure", "pneumonia")){
+      
+    }
+    else{
+      print("enter valid outcome") 
+      break
+   }
+   
+if (outcome1=="heart attack"){var=  "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack"}
+  if (outcome1== "heart failure"){var= "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure" }
+  if (outcome1=="pneumonia"){var="Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia"} 
+  a1<-outcome[c("State","Hospital.Name",var)]   
+  a1[,c(2)]=trimws(a1[,c(2)])  
+```
+  #remove whitespace
+```{r}
+  a1[,c(3)]=trimws(a1[,c(3)])
+```
+#a21<-a1[order(as.numeric(as.factor(a1[,2]))),]
+```{r}
+a2<-a1[order(as.numeric(as.factor(a1[,1])), as.numeric(a1[,3])),]
+  a33<-a2[is.na(a2[,3])==0,]  # exclude na rec in col 3 
+  a33<-a33[a33[,3]!='Not Available',]  # exclude na rec in col 3 
+  if (rank=="best"){rank=1}
+  if (rank=="worst"){
+    rank=nrow(a33) 
+  }
+  states <- sort(unique(a33$State))  #unique states
+  
+  for (i in  states){
+    ind<-subset(a33,a33$State==i)
+    s<-rbind(ind[rank,],i)
+    print(s) 
+  }
+
+
+}
+```
+
+
